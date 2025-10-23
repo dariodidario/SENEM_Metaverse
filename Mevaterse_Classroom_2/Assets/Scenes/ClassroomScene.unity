@@ -4200,6 +4200,7 @@ GameObject:
   - component: {fileID: 315798990}
   - component: {fileID: 315798989}
   - component: {fileID: 315798988}
+  - component: {fileID: 315798991}
   m_Layer: 0
   m_Name: PlayButton
   m_TagString: Untagged
@@ -4284,6 +4285,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1847601738}
+        m_TargetAssemblyTypeName: VirtualButtonLogger, Assembly-CSharp
+        m_MethodName: LogPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &315798989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4322,6 +4335,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 315798986}
   m_CullTransparentMesh: 1
+--- !u!114 &315798991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 315798986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8f87de492a680042b8e7d4d3ea6bd58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!54 &325696127
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -11836,6 +11861,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1269862116}
         m_TargetAssemblyTypeName: UnityEngine.Video.VideoPlayer, UnityEngine
         m_MethodName: Pause
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1847601740}
+        m_TargetAssemblyTypeName: VirtualButtonLogger, Assembly-CSharp
+        m_MethodName: LogPress
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -24199,6 +24236,65 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!1 &1847601737
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1847601739}
+  - component: {fileID: 1847601738}
+  - component: {fileID: 1847601740}
+  m_Layer: 0
+  m_Name: VirtualButtonLogger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1847601738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1847601737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da083c4d01d14427a877c3b08626f435, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonId: PlayButton
+--- !u!4 &1847601739
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1847601737}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.0109248, y: -1.3755454, z: 6.0961843}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1847601740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1847601737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da083c4d01d14427a877c3b08626f435, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonId: PauseButton
 --- !u!1 &1848276601
 GameObject:
   m_ObjectHideFlags: 0
