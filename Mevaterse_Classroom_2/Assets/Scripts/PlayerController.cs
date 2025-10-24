@@ -6,6 +6,10 @@ using UnityEngine.EventSystems;
 using Photon.Realtime;
 using System;
 
+//Addition
+using UnityEngine.Events;
+using System;
+
 public class PlayerController : MonoBehaviourPunCallbacks
 {
     // Controls the camera movement
@@ -61,8 +65,31 @@ public class PlayerController : MonoBehaviourPunCallbacks
     private Vector3 spawnPosition;
     public AudioSource clapSound;
 
+    // === Lesson Video control ===
+    [Header("Lesson Video")]
+    [SerializeField] private KeyCode playKey = KeyCode.P;             // tasto per avviare/pausare
+    //[SerializeField] private UnityEvent OnPlayPauseRequested;         // aggancia qui la tua azione (Play/Pause)
+    //[SerializeField] private GameObject[] virtualButtonsToDisable;    // eventuali bottoni UI da nascondere quando seduto
+    [SerializeField] private string videoObjectName = "VideoPlayer";
+    private LessonVideoController videoCtrl;
+
     public override void OnEnable()
     {
+        base.OnEnable();
+
+        // Trova il controller del video a runtime, usando il nome in scena
+        var go = GameObject.Find(videoObjectName);
+        if (go != null)
+        {
+            videoCtrl = go.GetComponent<LessonVideoController>();
+            if (videoCtrl == null)
+                Debug.LogError("[PlayerController] LessonVideoController non trovato su 'VideoPlayer'.");
+        }
+        else
+        {
+            Debug.LogWarning($"[PlayerController] GameObject '{videoObjectName}' non trovato in scena.");
+        }
+    // ...
         move.Enable();
         mouseX.Enable();
         mouseY.Enable();
@@ -205,6 +232,43 @@ public class PlayerController : MonoBehaviourPunCallbacks
             controller.enabled = true;
         }
 
+        //Added
+        // Start/Pause video: solo quando sono seduto, non sto scrivendo, e la whiteboard non è in editing
+        if (isSitting
+        && !isTyping
+        && (whiteBoard == null || !whiteBoard.isBeingEdited)
+        && (textChat == null || !textChat.isSelected)
+        && Input.GetKeyDown(playKey))
+    {
+        // Log con orario italiano + millisecondi
+        DateTime ts;
+        try
+        {
+            TimeZoneInfo tz;
+            try { tz = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time"); }
+            catch { tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Rome"); }
+            ts = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, tz);
+        }
+        catch
+        {
+            ts = DateTime.Now; // fallback
+        }
+
+        string stamp = ts.ToString("yyyy-MM-dd HH:mm:ss.fff");
+        string msg = $"{stamp} Video Played! (Pressed on Keyboard: {playKey});";
+        LogManager.Instance.LogInfo(msg);
+        Logger.Instance?.LogInfo(msg);
+
+        if (videoCtrl != null)
+        {
+            videoCtrl.TogglePlayPause();
+        }
+        else
+        {
+            Debug.LogWarning("[PlayerController] videoCtrl nullo: controlla il nome 'VideoPlayer' o aggiungi LessonVideoController.");
+        }
+    }
+
         AnimatorChecker(moveVelocity);
         InteractionInfoUpdate();
 
@@ -334,6 +398,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
         isSitting = true;
         animatorController.SetBool("IsSitting", true);
 
+        //Added
+
         //Tablet spawn
         //GetComponent<TabletSpawner>().SetTabletActive(true, transform.position + new Vector3(-0.05f, 0, 0.5f));
     }
@@ -357,6 +423,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
         isSitting = false;
         animatorController.SetBool("IsSitting", false);
         chair = null;
+
+        //Added
+        // (Opzionale) Riabilita i bottoni quando mi alzo
 
         //Tablet despawn
         //GetComponent<TabletSpawner>().SetTabletActive(false, transform.position);
@@ -427,7 +496,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
             interactionInfo.text = "Press C to sit";
 
         else if (isSitting && !isTyping)
-            interactionInfo.text = "Press C to stand up";
+            interactionInfo.text = "Press C to stand up\nPress P to start the video";
 
         else if(isSitting && isTyping)
             interactionInfo.text = "Press ESC to stop writing";

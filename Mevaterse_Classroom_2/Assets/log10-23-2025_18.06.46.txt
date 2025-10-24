@@ -1,4 +1,0 @@
-18:06:59: dariotest created room dariotest
-18:07:05: dariotest joined the room
-18:07:20: 2025-10-23 18:07:20.423;Video Started! (Pressed: PlayButton);
-18:07:40: 2025-10-23 18:07:40.043;Video Paused! (Pressed: PauseButton);
