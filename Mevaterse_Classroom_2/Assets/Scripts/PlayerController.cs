@@ -234,8 +234,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
         //Added
         // Start/Pause video: solo quando sono seduto, non sto scrivendo, e la whiteboard non è in editing
-        if (isSitting
-        && !isTyping
+        //modifica: non devo essere per forza seduto, posso attivarlo sempre
+        if (!isTyping
         && (whiteBoard == null || !whiteBoard.isBeingEdited)
         && (textChat == null || !textChat.isSelected)
         && Input.GetKeyDown(playKey))
@@ -496,7 +496,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
             interactionInfo.text = "Press C to sit";
 
         else if (isSitting && !isTyping)
-            interactionInfo.text = "Press C to stand up\nPress P to start the video";
+            interactionInfo.text = "Press C to stand up";
 
         else if(isSitting && isTyping)
             interactionInfo.text = "Press ESC to stop writing";
@@ -513,7 +513,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
         else if (whiteBoard != null && whiteBoard.isBeingEdited && Presenter.Instance.writerID != PhotonNetwork.LocalPlayer.UserId)
             interactionInfo.text = "Whiteboard is busy";
 
-        else 
+        else if (!isSitting)
+            interactionInfo.text = "Press P to start the lesson.";
+        else
             interactionInfo.text = "";
     }
 
