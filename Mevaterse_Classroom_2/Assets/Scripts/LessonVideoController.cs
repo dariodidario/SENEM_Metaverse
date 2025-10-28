@@ -36,8 +36,8 @@ public class LessonVideoController : MonoBehaviour
 
         if (videoPlayer.isPlaying)
         {
-            videoPlayer.Pause();
-            Debug.Log("[LessonVideoController] Paused");
+            //videoPlayer.Pause();
+            Debug.Log("[LessonVideoController] Paused Pressed but Temporarly Removed");
         }
         else
         {

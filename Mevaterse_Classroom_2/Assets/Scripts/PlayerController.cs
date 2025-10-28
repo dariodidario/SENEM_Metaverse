@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.EventSystems;
 using Photon.Realtime;
 using System;
+using System.Collections; 
 
 //Addition
 using UnityEngine.Events;
@@ -72,6 +73,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
     //[SerializeField] private GameObject[] virtualButtonsToDisable;    // eventuali bottoni UI da nascondere quando seduto
     [SerializeField] private string videoObjectName = "VideoPlayer";
     private LessonVideoController videoCtrl;
+
+    private bool isPressed = false;
 
     public override void OnEnable()
     {
@@ -236,10 +239,11 @@ public class PlayerController : MonoBehaviourPunCallbacks
         // Start/Pause video: solo quando sono seduto, non sto scrivendo, e la whiteboard non è in editing
         //modifica: non devo essere per forza seduto, posso attivarlo sempre
         if (!isTyping
-        && (whiteBoard == null || !whiteBoard.isBeingEdited)
+        && isPressed == false &&(whiteBoard == null || !whiteBoard.isBeingEdited)
         && (textChat == null || !textChat.isSelected)
         && Input.GetKeyDown(playKey))
     {
+        isPressed = true;
         // Log con orario italiano + millisecondi
         DateTime ts;
         try
@@ -256,12 +260,18 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
         string stamp = ts.ToString("yyyy-MM-dd HH:mm:ss.fff");
         string msg = $"{stamp} Video Played! (Pressed on Keyboard: {playKey});";
+        
         LogManager.Instance.LogInfo(msg);
         Logger.Instance?.LogInfo(msg);
 
         if (videoCtrl != null)
         {
             videoCtrl.TogglePlayPause();
+            //Ottenimento del range operativo per eye tracking e iMotion.
+            //ottiene time stamp iniziale dell'audio cue per la sincronizzazione dell'eye tracking e iMotion
+            StartCoroutine(LogAfterDelay(4f, "First"));
+            //ottiene time stamp finale dell'audio cue per la sincronizzazione dell'eye-tracking e iMotion.
+            StartCoroutine(LogAfterDelay(658f, "Final"));
         }
         else
         {
@@ -273,6 +283,30 @@ public class PlayerController : MonoBehaviourPunCallbacks
         InteractionInfoUpdate();
 
     }
+
+    private IEnumerator LogAfterDelay(float delaySeconds, String times)
+{
+    yield return new WaitForSeconds(delaySeconds);
+
+    // Calcolo nuovo timestamp in ora italiana con millisecondi
+    DateTime ts;
+    try
+    {
+        TimeZoneInfo tz;
+        try { tz = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time"); }
+        catch { tz = TimeZoneInfo.FindSystemTimeZoneById("Europe/Rome"); }
+        ts = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, tz);
+    }
+    catch
+    {
+        ts = DateTime.Now; // fallback
+    }
+
+    string stamp = ts.ToString("yyyy-MM-dd HH:mm:ss.fff");
+    string msg = $"{stamp}  {times} Audio Cue Triggered;";
+    LogManager.Instance.LogInfo(msg);
+    Logger.Instance?.LogInfo(msg);
+}
 
     private void LateUpdate()
     {
@@ -493,10 +527,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
     private void InteractionInfoUpdate()
     {
         if (chair != null && !isSitting && !chair.GetComponent<ChairController>().IsBusy())
-            interactionInfo.text = "Press C to sit";
+            interactionInfo.text = "Press C to sit\nPress P to start the lesson";
 
         else if (isSitting && !isTyping)
-            interactionInfo.text = "Press C to stand up";
+            interactionInfo.text = "Press C to stand up\nPress P to start the lesson";
 
         else if(isSitting && isTyping)
             interactionInfo.text = "Press ESC to stop writing";
